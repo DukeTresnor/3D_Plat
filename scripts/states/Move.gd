@@ -1,6 +1,12 @@
 extends State
 
+const movement_dampener: float = 0.8
+
+
 var movement_vector: Vector3
+
+
+
 
 func enter(_msg := {}) -> void:
 	
@@ -46,7 +52,7 @@ func update(delta: float) -> void:
 	#   not sure if this works, Damp effect from inspector is unknown...
 	#movement_vector = Vector3.ZERO
 	print("Move: movement_vector: " + str(movement_vector))
-	movement_vector *= 0.9
+	
 	
 	# Replace with 3D logic for detecting transition to falling state
 	#if not owner.is_on_floor():
@@ -70,6 +76,13 @@ func update(delta: float) -> void:
 		state_machine.transition_to("Move", {move_type = "move_left"})
 	if Input.is_action_pressed("move_right"):
 		state_machine.transition_to("Move", {move_type = "move_right"})
+
+	if not Input.is_action_pressed("move_up") and not Input.is_action_pressed("move_down") and not Input.is_action_pressed("move_left") and not Input.is_action_pressed("move_right"):
+		print("Move: not holding button")
+		# When you are not holding in a direction, reduce the force applied to the
+		#   player over time
+		# Not sure of this implementation
+		movement_vector *= movement_dampener
 
 
 	if Input.is_action_just_pressed("attack"):
