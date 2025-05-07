@@ -1,6 +1,7 @@
 extends State
 
-const movement_dampener: float = 0.8
+# Should be less than 1
+const movement_dampener: float = 0.2
 
 
 var movement_vector: Vector3
@@ -9,6 +10,9 @@ var movement_vector: Vector3
 
 
 func enter(_msg := {}) -> void:
+	
+	# When you enter move, play the move animation
+	## Move animation call here
 	
 	# Pretty clunky, this takes the _msg input which is a dictionary,
 	#   extracts its values from the key: value pairs, then extracts
@@ -28,18 +32,19 @@ func enter(_msg := {}) -> void:
 			print("Move: move_right")
 			movement_vector = Vector3.RIGHT
 	
-	#pass
-	
-	# When you enter move, playe the move animation using the state_machine's 3d mesh?
-	#state_machine.animated_sprite_2d.play("idle")
-	#state_machine.animated_mesh_3d.play("idle")
 
 func update(delta: float) -> void:
 	# Assigning for easy reference
 	# Reference for player position -- if needed
 	#owner.player_pos = state_machine.animated_sprite_2d.global_position
 	
-	owner.apply_central_force(movement_vector * 1200.0 * delta)
+	pass
+		
+
+func physics_update(delta: float) -> void:
+
+	owner.velocity += owner.gravity * delta
+	
 	
 	# After a force is applied to the player, reset movement_vector to let the
 	#   player slow down
@@ -53,11 +58,20 @@ func update(delta: float) -> void:
 	#movement_vector = Vector3.ZERO
 	print("Move: movement_vector: " + str(movement_vector))
 	
+	# Maybe move these variables to the player script?
+	var move_horizontal_velocity := Vector3(owner.velocity.x, 0, owner.velocity.z)
+	var move_vertical_velocity := Vector3(0, owner.velocity.y, 0)
 	
-	# Replace with 3D logic for detecting transition to falling state
-	#if not owner.is_on_floor():
-	#	state_machine.transition_to("Jump")
-	#	return
+	owner.velocity.x += movement_vector.x
+	owner.velocity.z += movement_vector.z
+	
+	owner.move_and_slide()
+	
+	
+
+
+	if not owner.is_on_floor():
+		state_machine.transition_to("Jump")
 
 	if Input.is_action_just_pressed("jump"):
 		state_machine.transition_to("Jump", {do_jump = true})

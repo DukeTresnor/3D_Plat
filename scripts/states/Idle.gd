@@ -8,6 +8,7 @@ func enter(_msg := {}) -> void:
 	#state_machine.animated_mesh_3d.play("idle")
 	print("Idle: Playing Idle animation")
 
+
 func update(delta: float) -> void:
 	# Assigning for easy reference
 	# Reference for player position -- if needed
@@ -39,3 +40,10 @@ func update(delta: float) -> void:
 
 	if Input.is_action_just_pressed("attack"):
 		state_machine.transition_to("Attack")
+
+
+func physics_update(delta: float) -> void:
+	
+	owner.velocity += owner.gravity * delta
+	owner.move_and_slide()
+	

@@ -1,4 +1,13 @@
-extends RigidBody3D
+extends CharacterBody3D
+
+
+const JUMP_FORCE = 10.0
+
+
+
+@onready var gravity: Vector3 = ProjectSettings.get_setting("physics/3d/default_gravity") * \
+							ProjectSettings.get_setting("physics/3d/default_gravity_vector")
+
 
 
 # Called when the node enters the scene tree for the first time.
